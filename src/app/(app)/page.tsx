@@ -1,9 +1,12 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { generateDailyBriefing, collectBriefingData } from "@/server/ai/briefing";
+import { getWeeklyRevenueSeries } from "@/server/analytics/revenue";
 import { StatTile } from "@/components/ui/StatTile";
+import { Sparkline } from "@/components/ui/Sparkline";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge, PROJECT_STATUS_TONE } from "@/components/ui/Badge";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { formatSEK } from "@/lib/utils";
 import { LinkButton } from "@/components/ui/Button";
 import Link from "next/link";
@@ -13,35 +16,40 @@ export default async function DashboardPage() {
   const companyId = session!.user.companyId;
   const userName = session!.user.name ?? "";
 
-  const [briefing, data, staleCustomerContacts] = await Promise.all([
+  const [briefing, data, staleCustomerContacts, weeklyRevenue] = await Promise.all([
     generateDailyBriefing(companyId, userName),
     collectBriefingData(companyId, userName),
     prisma.customer.count({ where: { companyId, status: "ACTIVE" } }),
+    getWeeklyRevenueSeries(companyId),
   ]);
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-6">
-      <div>
-        <h1 className="text-xl font-semibold text-text-primary">Översikt</h1>
-        <p className="text-sm text-text-muted">Din AI executive assistant — dagens läge på ett ställe.</p>
-      </div>
+    <div className="mx-auto flex max-w-5xl flex-col">
+      <PageHeader title="Översikt" description="Din AI executive assistant — dagens läge på ett ställe." />
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <StatTile label="Omsättning denna vecka" value={formatSEK(data.revenueThisWeek)} />
+        <StatTile label="Omsättning denna vecka" value={formatSEK(data.revenueThisWeek)} icon="chart" className="md:col-span-2">
+          <Sparkline data={weeklyRevenue} />
+        </StatTile>
         <StatTile
           label="Försenade projekt"
           value={String(data.delayedProjects.length)}
+          icon="clock"
           tone={data.delayedProjects.length > 0 ? "critical" : "good"}
         />
         <StatTile
           label="Fakturor att följa upp"
           value={String(data.invoicesToFollowUp)}
+          icon="receipt"
           tone={data.invoicesToFollowUp > 0 ? "critical" : "good"}
         />
-        <StatTile label="Olästa viktiga mail" value={String(data.unreadImportantEmails)} />
       </div>
 
-      <Card>
+      <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+        <StatTile label="Olästa viktiga mail" value={String(data.unreadImportantEmails)} icon="mail" className="col-span-2 md:col-span-4" />
+      </div>
+
+      <Card className="mt-6">
         <CardHeader>
           <div>
             <CardTitle>Dagens sammanfattning</CardTitle>
@@ -58,7 +66,7 @@ export default async function DashboardPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Försenade projekt</CardTitle>

@@ -3,6 +3,8 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/Card";
 import { Badge, PROJECT_STATUS_TONE } from "@/components/ui/Badge";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Avatar } from "@/components/ui/Avatar";
 import { formatDate } from "@/lib/utils";
 
 const PROJECT_LABEL_SV: Record<string, string> = {
@@ -20,11 +22,8 @@ export default async function ProjectsPage() {
   });
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-6">
-      <div>
-        <h1 className="text-xl font-semibold text-text-primary">Projekt</h1>
-        <p className="text-sm text-text-muted">AI övervakar deadlines och flaggar förseningar automatiskt.</p>
-      </div>
+    <div className="mx-auto flex max-w-5xl flex-col">
+      <PageHeader title="Projekt" description="AI övervakar deadlines och flaggar förseningar automatiskt." />
 
       <div className="grid gap-4 md:grid-cols-2">
         {projects.map((p) => {
@@ -34,21 +33,24 @@ export default async function ProjectsPage() {
 
           return (
             <Link key={p.id} href={`/projects/${p.id}`}>
-              <Card className="flex h-full flex-col gap-3 p-5 hover:bg-white/[0.02]">
+              <Card className="flex h-full flex-col gap-3 p-5 transition-colors hover:border-border-strong hover:bg-white/[0.02]">
                 <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <div className="text-sm font-medium text-text-primary">{p.name}</div>
-                    <div className="text-xs text-text-muted">{p.customer.name}</div>
+                  <div className="flex items-center gap-2.5">
+                    <Avatar name={p.customer.name} size="sm" />
+                    <div>
+                      <div className="text-sm font-medium text-text-primary">{p.name}</div>
+                      <div className="text-xs text-text-muted">{p.customer.name}</div>
+                    </div>
                   </div>
                   <Badge tone={PROJECT_STATUS_TONE[p.status]}>{PROJECT_LABEL_SV[p.status]}</Badge>
                 </div>
 
                 <div className="mt-auto flex flex-col gap-1.5">
                   <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
-                    <div className="h-full rounded-full bg-accent" style={{ width: `${progress}%` }} />
+                    <div className="h-full rounded-full bg-accent transition-[width]" style={{ width: `${progress}%` }} />
                   </div>
                   <div className="flex justify-between text-xs text-text-muted">
-                    <span>{done}/{total} uppgifter klara</span>
+                    <span className="tabular-nums">{done}/{total} uppgifter klara</span>
                     <span>{p.deadline ? `Deadline ${formatDate(p.deadline)}` : "Ingen deadline"}</span>
                   </div>
                 </div>

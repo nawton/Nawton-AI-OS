@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { ChatClient } from "@/components/chat/ChatClient";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 export default async function ChatPage() {
   const session = await auth();
@@ -21,11 +22,8 @@ export default async function ChatPage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-4">
-      <div>
-        <h1 className="text-xl font-semibold text-text-primary">AI Chat</h1>
-        <p className="text-sm text-text-muted">Din AI-agent — kopplad till CRM, projekt och fakturor.</p>
-      </div>
+    <div className="mx-auto flex max-w-3xl flex-col">
+      <PageHeader title="AI Chat" description="Din AI-agent — kopplad till CRM, projekt och fakturor." />
       <ChatClient
         conversationId={conversation.id}
         initialMessages={conversation.messages

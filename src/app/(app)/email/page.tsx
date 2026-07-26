@@ -3,6 +3,8 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/Card";
 import { Badge, LEAD_POTENTIAL_TONE } from "@/components/ui/Badge";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Avatar } from "@/components/ui/Avatar";
 import { formatDate, cn } from "@/lib/utils";
 
 export default async function EmailPage() {
@@ -17,11 +19,8 @@ export default async function EmailPage() {
   const unreadCount = emails.filter((e) => !e.isRead && e.direction === "INBOUND").length;
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-6">
-      <div>
-        <h1 className="text-xl font-semibold text-text-primary">E-post</h1>
-        <p className="text-sm text-text-muted">{unreadCount} olästa viktiga mail — AI klassificerar leads automatiskt.</p>
-      </div>
+    <div className="mx-auto flex max-w-4xl flex-col">
+      <PageHeader title="E-post" description={`${unreadCount} olästa viktiga mail — AI klassificerar leads automatiskt.`} />
 
       <Card className="overflow-hidden">
         <div className="flex flex-col">
@@ -30,10 +29,11 @@ export default async function EmailPage() {
               key={email.id}
               href={`/email/${email.id}`}
               className={cn(
-                "flex items-center justify-between gap-4 border-b border-border-hairline px-5 py-4 last:border-0 hover:bg-white/[0.02]",
+                "flex items-center gap-3.5 border-b border-border-hairline px-5 py-4 last:border-0 transition-colors hover:bg-white/[0.025]",
                 !email.isRead && email.direction === "INBOUND" && "bg-accent-soft/30",
               )}
             >
+              <Avatar name={email.fromName ?? email.fromAddress} size="sm" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className={cn("text-sm", !email.isRead ? "font-semibold text-text-primary" : "text-text-secondary")}>

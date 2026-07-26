@@ -4,10 +4,10 @@ export type BadgeTone = "neutral" | "good" | "warning" | "serious" | "critical" 
 
 const TONE_STYLES: Record<BadgeTone, string> = {
   neutral: "bg-white/6 text-text-secondary",
-  good: "bg-[color-mix(in_oklab,var(--status-good)_16%,transparent)] text-[#4ade80]",
-  warning: "bg-[color-mix(in_oklab,var(--status-warning)_18%,transparent)] text-[#fab219]",
-  serious: "bg-[color-mix(in_oklab,var(--status-serious)_18%,transparent)] text-[#ec835a]",
-  critical: "bg-[color-mix(in_oklab,var(--status-critical)_18%,transparent)] text-[#f08a8a]",
+  good: "bg-status-good/16 text-status-good",
+  warning: "bg-status-warning/18 text-status-warning",
+  serious: "bg-status-serious/18 text-status-serious",
+  critical: "bg-status-critical/18 text-status-critical",
   accent: "bg-accent-soft text-accent-strong",
 };
 

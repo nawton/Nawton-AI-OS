@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge, PROJECT_STATUS_TONE, TASK_STATUS_TONE, PRIORITY_TONE } from "@/components/ui/Badge";
+import { Avatar } from "@/components/ui/Avatar";
 import { formatDate, formatSEK } from "@/lib/utils";
 
 const PROJECT_LABEL_SV: Record<string, string> = {
@@ -59,7 +60,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         <Card>
           <CardContent>
             <div className="text-xs text-text-muted">Ansvarig</div>
-            <div className="mt-1 text-sm font-medium text-text-primary">{project.owner?.name ?? "Ej tilldelad"}</div>
+            <div className="mt-1.5 flex items-center gap-2">
+              {project.owner ? <Avatar name={project.owner.name} size="xs" /> : null}
+              <span className="text-sm font-medium text-text-primary">{project.owner?.name ?? "Ej tilldelad"}</span>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -70,12 +74,18 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         </CardHeader>
         <CardContent className="flex flex-col gap-2">
           {project.tasks.map((t) => (
-            <div key={t.id} className="flex items-center justify-between rounded-(--radius-md) border border-border-hairline p-3">
-              <div>
-                <div className="text-sm text-text-primary">{t.title}</div>
-                <div className="text-xs text-text-muted">
-                  {t.assignee?.name ?? "Ej tilldelad"}
-                  {t.dueDate ? ` · ${formatDate(t.dueDate)}` : ""}
+            <div
+              key={t.id}
+              className="flex items-center justify-between rounded-(--radius-md) border border-border-hairline p-3 transition-colors hover:border-border-strong"
+            >
+              <div className="flex items-center gap-2.5">
+                {t.assignee ? <Avatar name={t.assignee.name} size="xs" /> : null}
+                <div>
+                  <div className="text-sm text-text-primary">{t.title}</div>
+                  <div className="text-xs text-text-muted">
+                    {t.assignee?.name ?? "Ej tilldelad"}
+                    {t.dueDate ? ` · ${formatDate(t.dueDate)}` : ""}
+                  </div>
                 </div>
               </div>
               <div className="flex gap-2">

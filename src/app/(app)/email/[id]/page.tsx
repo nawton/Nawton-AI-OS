@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { classifyEmail } from "@/server/ai/email-classifier";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge, LEAD_POTENTIAL_TONE } from "@/components/ui/Badge";
+import { Avatar } from "@/components/ui/Avatar";
 import { formatDate, formatSEK } from "@/lib/utils";
 
 export default async function EmailDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -47,11 +48,14 @@ export default async function EmailDetailPage({ params }: { params: Promise<{ id
 
       <Card>
         <CardHeader>
-          <div>
-            <CardTitle className="text-base">{email.subject}</CardTitle>
-            <p className="mt-1 text-xs text-text-muted">
-              {email.direction === "INBOUND" ? "Från" : "Till"}: {email.fromName ?? email.fromAddress} · {formatDate(email.receivedAt)}
-            </p>
+          <div className="flex items-start gap-3">
+            <Avatar name={email.fromName ?? email.fromAddress} size="md" />
+            <div>
+              <CardTitle className="text-base">{email.subject}</CardTitle>
+              <p className="mt-1 text-xs text-text-muted">
+                {email.direction === "INBOUND" ? "Från" : "Till"}: {email.fromName ?? email.fromAddress} · {formatDate(email.receivedAt)}
+              </p>
+            </div>
           </div>
         </CardHeader>
         <CardContent>

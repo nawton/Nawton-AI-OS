@@ -9,6 +9,9 @@ const PATHS: Record<string, string> = {
   book: "M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4Z",
   code: "m9 6-6 6 6 6m6-12 6 6-6 6",
   bolt: "M13 3 5 14h6l-1 7 8-11h-6l1-7Z",
+  receipt: "M6 3h12v18l-3-2-3 2-3-2-3 2V3Zm3 5h6m-6 4h6m-6 4h4",
+  clock: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-13v4.5l3 2",
+  arrowUp: "M12 19V5m0 0-6 6m6-6 6 6",
 };
 
 export function NavIcon({ name, className }: { name: string; className?: string }) {

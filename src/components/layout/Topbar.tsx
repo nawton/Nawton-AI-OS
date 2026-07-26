@@ -1,11 +1,14 @@
 import { signOut } from "@/auth";
+import { Avatar } from "@/components/ui/Avatar";
 
-export function Topbar({ userName, title }: { userName: string; title?: string }) {
+export function Topbar({ userName }: { userName: string }) {
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-border-hairline bg-surface-0/80 px-6 backdrop-blur">
-      <div className="text-sm font-medium text-text-primary">{title}</div>
+    <header className="flex h-14 shrink-0 items-center justify-end border-b border-border-hairline bg-surface-0/80 px-6 backdrop-blur">
       <div className="flex items-center gap-3">
-        <span className="text-sm text-text-secondary">{userName}</span>
+        <div className="flex items-center gap-2">
+          <Avatar name={userName || "?"} size="sm" />
+          <span className="text-sm text-text-secondary">{userName}</span>
+        </div>
         <form
           action={async () => {
             "use server";
