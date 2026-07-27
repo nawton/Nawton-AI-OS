@@ -32,7 +32,8 @@ export function ChatClient({ conversationId, initialMessages }: { conversationId
         body: JSON.stringify({ conversationId, message: text }),
       });
       const data = await res.json();
-      setMessages((m) => [...m, { id: crypto.randomUUID(), role: "ASSISTANT", content: data.reply ?? "Något gick fel." }]);
+      const content = res.ok ? (data.reply ?? "Något gick fel.") : (data.error ?? "Något gick fel.");
+      setMessages((m) => [...m, { id: crypto.randomUUID(), role: "ASSISTANT", content }]);
     } catch {
       setMessages((m) => [...m, { id: crypto.randomUUID(), role: "ASSISTANT", content: "Kunde inte nå AI-tjänsten just nu." }]);
     } finally {
@@ -105,6 +106,7 @@ export function ChatClient({ conversationId, initialMessages }: { conversationId
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Skriv ett meddelande…"
+          maxLength={4000}
           className="h-10 flex-1 rounded-(--radius-md) border border-border-strong bg-surface-2 px-3 text-sm text-text-primary outline-none focus:border-accent"
         />
         <button

@@ -20,6 +20,17 @@ export async function runAgentChat(messages: ChatMessage[], companyId: string): 
     return demoModeReply(lastUserMessage, companyId);
   }
 
+  try {
+    return await runWithOpenAI(client, messages, companyId);
+  } catch (error) {
+    // OpenAI errors (quota exceeded, network issues, invalid model, etc.)
+    // shouldn't 500 the whole chat — fall back the same way demo mode does.
+    console.error("[chat] OpenAI request failed, falling back to demo mode:", error);
+    return demoModeReply(lastUserMessage, companyId);
+  }
+}
+
+async function runWithOpenAI(client: OpenAI, messages: ChatMessage[], companyId: string): Promise<string> {
   const chatMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
     { role: "system", content: SYSTEM_PROMPT },
     ...messages.map((m) => ({ role: m.role, content: m.content }) as OpenAI.Chat.Completions.ChatCompletionMessageParam),
