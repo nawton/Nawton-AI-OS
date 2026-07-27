@@ -45,12 +45,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     return <StaleSessionNotice />;
   }
 
+  const companyName = user?.company.name ?? "Nawton AI OS";
+
   return (
     <div className="flex h-full min-h-screen w-full">
-      <Sidebar companyName={user?.company.name ?? "Nawton AI OS"} />
+      <Sidebar companyName={companyName} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar userName={user?.name ?? ""} />
-        <main className="flex-1 overflow-y-auto p-6">
+        <Topbar userName={user?.name ?? ""} companyName={companyName} />
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <PageTransition>{children}</PageTransition>
         </main>
       </div>

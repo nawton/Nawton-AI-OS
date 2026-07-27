@@ -12,6 +12,8 @@ const PATHS: Record<string, string> = {
   receipt: "M6 3h12v18l-3-2-3 2-3-2-3 2V3Zm3 5h6m-6 4h6m-6 4h4",
   clock: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-13v4.5l3 2",
   arrowUp: "M12 19V5m0 0-6 6m6-6 6 6",
+  menu: "M4 6h16M4 12h16M4 18h16",
+  close: "M6 6l12 12M18 6 6 18",
 };
 
 export function NavIcon({ name, className }: { name: string; className?: string }) {
