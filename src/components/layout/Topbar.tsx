@@ -1,6 +1,7 @@
 import { signOut } from "@/auth";
 import { Avatar } from "@/components/ui/Avatar";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { CommandPaletteTrigger } from "@/components/command/CommandPaletteTrigger";
 
 export function Topbar({ userName, companyName }: { userName: string; companyName: string }) {
   return (
@@ -17,6 +18,7 @@ export function Topbar({ userName, companyName }: { userName: string; companyNam
       </div>
 
       <div className="flex items-center gap-3">
+        <CommandPaletteTrigger />
         <div className="hidden items-center gap-2 sm:flex">
           <Avatar name={userName || "?"} size="sm" />
           <span className="text-sm text-text-secondary">{userName}</span>

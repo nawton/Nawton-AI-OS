@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { CommandPalette } from "@/components/command/CommandPalette";
 
 // A JWT session embeds companyId/userId at login time and isn't invalidated
 // when the underlying rows disappear (e.g. the database gets reseeded in
@@ -49,6 +50,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex h-full min-h-screen w-full">
+      <CommandPalette />
       <Sidebar companyName={companyName} />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar userName={user?.name ?? ""} companyName={companyName} />

@@ -14,6 +14,7 @@ const PATHS: Record<string, string> = {
   arrowUp: "M12 19V5m0 0-6 6m6-6 6 6",
   menu: "M4 6h16M4 12h16M4 18h16",
   close: "M6 6l12 12M18 6 6 18",
+  search: "M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm9 2-5.5-5.5",
 };
 
 export function NavIcon({ name, className }: { name: string; className?: string }) {
