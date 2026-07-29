@@ -14,6 +14,7 @@ async function main() {
   console.log("Seeding Nawton AI OS demo data...");
 
   await prisma.$transaction([
+    prisma.timeEntry.deleteMany(),
     prisma.workflowRun.deleteMany(),
     prisma.workflow.deleteMany(),
     prisma.aIMemory.deleteMany(),
@@ -46,6 +47,7 @@ async function main() {
       email: "nawid@nawton.se",
       passwordHash,
       role: "OWNER",
+      hourlyRate: 950,
     },
   });
 
@@ -56,6 +58,7 @@ async function main() {
       email: "alex@nawton.se",
       passwordHash,
       role: "ADMIN",
+      hourlyRate: 850,
     },
   });
 
@@ -218,9 +221,10 @@ async function main() {
         ],
       },
     },
+    include: { tasks: true },
   });
 
-  await prisma.project.create({
+  const bellaProject = await prisma.project.create({
     data: {
       companyId: company.id,
       customerId: bellaSalong.id,
@@ -237,9 +241,10 @@ async function main() {
         ],
       },
     },
+    include: { tasks: true },
   });
 
-  await prisma.project.create({
+  const solsidanProject = await prisma.project.create({
     data: {
       companyId: company.id,
       customerId: solsidan.id,
@@ -255,9 +260,10 @@ async function main() {
         ],
       },
     },
+    include: { tasks: true },
   });
 
-  await prisma.project.create({
+  const fastighetProject = await prisma.project.create({
     data: {
       companyId: company.id,
       customerId: fastighetNorr.id,
@@ -270,6 +276,37 @@ async function main() {
         create: [{ title: "Lansering", status: "DONE", priority: "MEDIUM" }],
       },
     },
+    include: { tasks: true },
+  });
+
+  // --- Time entries ----------------------------------------------------------
+  // Backs the profitability view on each project's detail page — logged
+  // against real tasks so "budget vs. nedlagd kostnad" isn't a guess.
+
+  const findTask = (project: typeof milanoProject, title: string) => {
+    const task = project.tasks.find((t) => t.title === title);
+    if (!task) throw new Error(`Seed error: task "${title}" not found on project ${project.name}`);
+    return task;
+  };
+
+  await prisma.timeEntry.createMany({
+    data: [
+      // Milano (DELAYED, budget 45 000 kr) — margin has gotten tight, matches its DELAYED status
+      { companyId: company.id, projectId: milanoProject.id, taskId: findTask(milanoProject, "Frontend klar").id, userId: partner.id, minutes: 960, note: "Bygga responsiv startsida + menysida", loggedAt: daysAgo(10) },
+      { companyId: company.id, projectId: milanoProject.id, taskId: findTask(milanoProject, "SEO-optimering återstår").id, userId: nawid.id, minutes: 300, note: "Metadata + sitemap", loggedAt: daysAgo(3) },
+      { companyId: company.id, projectId: milanoProject.id, taskId: findTask(milanoProject, "SEO-optimering återstår").id, userId: nawid.id, minutes: 120, note: "Bildoptimering", loggedAt: daysAgo(1) },
+
+      // Bella (IN_PROGRESS, budget 34 900 kr) — healthy margin so far
+      { companyId: company.id, projectId: bellaProject.id, taskId: findTask(bellaProject, "Designutkast godkänt").id, userId: partner.id, minutes: 420, note: "Design + kundfeedback-rundor", loggedAt: daysAgo(14) },
+      { companyId: company.id, projectId: bellaProject.id, taskId: findTask(bellaProject, "Bygga bokningsflöde").id, userId: partner.id, minutes: 300, note: "Kalender-UI", loggedAt: daysAgo(4) },
+
+      // Café Solsidan (REVIEW, budget 19 900 kr) — tight but on budget
+      { companyId: company.id, projectId: solsidanProject.id, taskId: findTask(solsidanProject, "Innehåll inlagt").id, userId: nawid.id, minutes: 480, note: "Textinnehåll + bildval", loggedAt: daysAgo(9) },
+      { companyId: company.id, projectId: solsidanProject.id, taskId: findTask(solsidanProject, "Kundgodkännande väntas").id, userId: nawid.id, minutes: 360, note: "Sidbygge", loggedAt: daysAgo(5) },
+
+      // Fastighetsbyrå Norr (COMPLETED, budget 32 900 kr) — closed project, real margin to look back on
+      { companyId: company.id, projectId: fastighetProject.id, taskId: findTask(fastighetProject, "Lansering").id, userId: partner.id, minutes: 1080, note: "Hela projektet, samlad tid vid lansering", loggedAt: daysAgo(20) },
+    ],
   });
 
   // --- Invoices ------------------------------------------------------------
