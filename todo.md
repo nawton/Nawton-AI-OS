@@ -55,6 +55,19 @@ mot GitHub, avgränsat till repot `nawton/Nawton-AI-OS` för nu.
 - [ ] Paginering på listor (mail, kunder, uppgifter hämtas obegränsat)
 - [ ] Kunskapsbank + RAG-pipeline — se Fas 2 ovan
 - [ ] Automation-motor som faktiskt kör — se Fas 3 ovan
+- [x] Tidrapportering + lönsamhet per projekt (se "Behöver din manuella verifiering" nedan)
+
+## ⚠️ Behöver din manuella verifiering
+
+- [ ] **Testa "Logga tid" på ett projekt (Projekt → valfritt projekt → Tidrapportering).**
+      Koden är klar, typkontrollerad och byggd rent, men jag fick aldrig ett
+      pålitligt automatiserat webbläsartest att bekräfta formuläret end-to-end.
+      Headless-testverktyget (Puppeteer med en manuellt injicerad cookie) triggade
+      en session-utloggning vid ALLA Server Action-inskick — även den redan
+      existerande "flytta uppgift"-knappen på Uppgifter-tavlan, som jag inte rört.
+      Det pekar mot en testmiljö-artefakt snarare än en riktig bugg (proxy.ts
+      bekräftade en giltig session även när svaret rensade den), men jag har
+      inte kunnat bevisa det 100% — så dubbelkolla gärna med ett riktigt klick.
 
 ## Mindre saker att komma ihåg
 
