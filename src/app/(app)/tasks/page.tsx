@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/server/authz";
 import { Badge, PRIORITY_TONE } from "@/components/ui/Badge";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Avatar } from "@/components/ui/Avatar";
@@ -33,6 +34,16 @@ export default async function TasksPage() {
 
   async function advanceStatus(taskId: string, current: TaskStatus) {
     "use server";
+    const user = await requireAuth();
+
+    // The task's current status is bound from the render that showed the
+    // button, not re-verified — without this, any signed-in user could
+    // update any task in any company just by knowing its id.
+    const task = await prisma.task.findFirst({
+      where: { id: taskId, project: { companyId: user.companyId } },
+    });
+    if (!task) return;
+
     await prisma.task.update({ where: { id: taskId }, data: { status: NEXT_STATUS[current] } });
     revalidatePath("/tasks");
   }

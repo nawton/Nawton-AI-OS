@@ -1,5 +1,29 @@
 # Todo — Nawton AI OS
 
+## ⏸️ PAUSAD MITT I: Säkerhetsgranskning (fortsätt här näst)
+
+Full genomgång av alla server actions + API-routes gjord. Hittade och prioriterade
+(Critical/High/Medium). Klart hittills (uncommitted i arbetskatalogen):
+
+- [x] `src/server/authz.ts` — ny `requireAuth()`/`requireRole()`-hjälpfunktion
+- [x] IDOR fixad: `advanceStatus` (Uppgifter-tavlan) kontrollerade tidigare varken
+      inloggning eller företagstillhörighet innan den uppdaterade en uppgift
+- [x] Inloggning härdad: rate limiting (10 försök/5 min, per e-post OCH per IP)
+      + konstant svarstid i `authorize()` (fixar en timing-läcka som avslöjade
+      vilka e-postadresser hade konton)
+
+Kvar i den här granskningen innan den är "helt klar":
+- [ ] Dölj demo-inloggning (`defaultValue` i `login/page.tsx`) bakom
+      `process.env.NODE_ENV !== "production"` — just nu synligt ovillkorat
+- [ ] `logTime` (projektsidan) verifierar inte att `taskId` faktiskt tillhör
+      projektet — ett manipulerat formulär kan koppla en tidspost fel
+- [ ] `email/[id]/page.tsx` markerar mail som lästa direkt i sidans render
+      (GET), vilket Next.js Link-förhandshämtning kan trigga oavsiktligt —
+      flytta till en riktig user-triggered action
+- [ ] Säkerhetsheaders saknas helt i `next.config.ts` (CSP, X-Frame-Options,
+      Referrer-Policy, X-Content-Type-Options)
+- [ ] Kör tsc/lint/build + verifiera, sen commit + push
+
 ## Version 2 — roadmap (från "V2 Development Prompt")
 
 Fullständig prioritering och motivering finns i chatthistoriken (CTO-analysen av
